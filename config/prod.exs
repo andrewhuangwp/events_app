@@ -1,5 +1,8 @@
 use Mix.Config
 
+config :events_app, EventsApp.Endpoint,
+  env: "prod"
+
 # For production, don't forget to configure the url host
 # to something meaningful, Phoenix uses this information
 # when generating URLs.
@@ -10,6 +13,7 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :events_app, EventsAppWeb.Endpoint,
+  http: [:inet6, port: System.get_env("PORT") || 5231],
   url: [host: "events.normalwebsite.art", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
