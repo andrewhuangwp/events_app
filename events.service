@@ -1,0 +1,16 @@
+
+[Unit]
+Description=HW07 Events App
+
+[Service]
+Type=simple
+User=events
+Group=events
+Restart=on-failure
+Environment=LANG=en_US.UTF-8
+
+WorkingDirectory=/home/events/events_app
+ExecStart=/bin/bash /home/events/events_app/start.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+<h1>Listing Users</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+      <td><%= link "#{user.name}", to: Routes.user_path(@conn, :show, user) %></td>
+      <td><%= user.email %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "Create New User", to: Routes.user_path(@conn, :new), class: "btn btn-outline-primary" %></span>

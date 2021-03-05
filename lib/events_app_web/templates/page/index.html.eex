@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-sm-12 text-center">
+    <h1>Events App</h1>
+  </div>
+</div>
+
+<div class="row">
+
+  <div class="col-sm-6">
+    <h2>List of Events</h2>
+    <h6><span><%= link "View all", to: Routes.event_path(@conn, :index) %></span></h6>
+    <ul class="list-group">
+      <%= for event <- @events do %>
+        <%= link "#{event.name}", to: Routes.event_path(@conn, :show, event), class: "list-group-item" %>
+      <% end %>
+    </ul>
+  </div>
+  <div class="col-sm-6">
+    <h2>List of Users</h2>
+    <h6><span><%= link "View all", to: Routes.user_path(@conn, :index) %></span></h6>
+    <ul class="list-group">
+      <%= for user <- @users do %>
+        <%= link "#{user.name} - #{user.email}", to: Routes.user_path(@conn, :show, user), class: "list-group-item" %>
+      <% end %>
+    </ul>
+  </div>
+</div>

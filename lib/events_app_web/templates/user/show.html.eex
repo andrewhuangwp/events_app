@@ -1,0 +1,24 @@
+<%= if isCurrUser?(@conn, @user.id) do %>
+  <h1>Your Profile</h1>
+<% else %>
+  <h1><%= @user.name %>'s Profile</h1>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @user.name %>
+  </li>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @user.email %>
+  </li>
+
+</ul>
+
+<%= if isCurrUser?(@conn, @user.id) do %>
+<span><%= link "Edit Profile", to: Routes.user_path(@conn, :edit, @user), class: "btn btn-outline-info" %></span>
+<% end %>
+<span><%= link "View All Profiles", to: Routes.user_path(@conn, :index), class: "btn btn-outline-primary" %></span>
