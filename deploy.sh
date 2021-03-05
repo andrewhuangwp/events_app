@@ -5,7 +5,7 @@ export MIX_ENV=prod
 export PORT=5231
 export NODEBIN=`pwd`/assets/node_modules/.bin
 export PATH="$PATH:$NODEBIN"
-export DATABASE_URL=ecto://events_app:iekey1Sohx5c@localhost:5231/events_app_prod
+export DATABASE_URL=ecto://events_app:iekey1Sohx5c@localhost/events_app_prod
 
 
 echo "Building..."
