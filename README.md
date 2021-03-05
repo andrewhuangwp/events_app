@@ -3,7 +3,7 @@
 Attribution: Prof. Tuck's Photo blog repo, Flatpickr, Bootstrap Documentation
 
 Design Decisions:
-Login using only email, anyone can create user and event, anyone can edit event.
+Login using only email, anyone can create user and event, anyone can edit event, no email validation yet, events can take place before current date, anyone can create user but only users logged in can create events. Participants and invites not implemented since not specified in requirements.
 
 To start your Phoenix server:
 
