@@ -13,7 +13,6 @@ config :events_app, EventsApp.Endpoint,
 # which you should run after static files are built and
 # before starting your production server.
 config :events_app, EventsAppWeb.Endpoint,
-  http: [:inet6, port: System.get_env("PORT") || 5231],
   url: [host: "events.normalwebsite.art", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
@@ -56,4 +55,4 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
-# import_config "prod.secret.exs"
+import_config "prod.secret.exs"
