@@ -2,6 +2,9 @@
 
 Attribution: Prof. Tuck's Photo blog repo, Flatpickr, Bootstrap Documentation
 
+Design Decisions:
+Login using only email, anyone can create user and event, anyone can edit event.
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
