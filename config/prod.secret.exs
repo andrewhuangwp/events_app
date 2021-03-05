@@ -39,4 +39,4 @@ config :events_app, EventsAppWeb.Endpoint,
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.
-config :events, EventsAppWeb.Endpoint, server: true
+config :events_app, EventsAppWeb.Endpoint, server: true

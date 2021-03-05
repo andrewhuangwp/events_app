@@ -1,19 +1,16 @@
 #!/bin/bash
 
+export SECRET_KEY_BASE=W68eso5YQOlbtvSNUR50N/HDWj6IaEhAwMR3LtzuBEQAefwYVbX84bvoTA7XtiGi
 export MIX_ENV=prod
 export PORT=5231
+export DATABASE_URL=ecto://events_app:iekey1Sohx5c@localhost:5231/events_app_prod
 
-CFGD=$(readlink -f ~/.config/events)
 
-if [ ! -e "$CFGD/base" ]; then
-    echo "run deploy first"
-    exit 1
-fi
+echo "Stopping old copy of app, if any..."
 
-SECRET_KEY_BASE=$(cat "$CFGD/base")
-export SECRET_KEY_BASE
+_build/prod/rel/events_app/bin/events_app stop || true
 
-DB_PASS=$(cat "$CFGD/db_pass")
-export DATABASE_URL=ecto://events_app:$DB_PASS@localhost/events_app_prod
+echo "Starting app..."
 
+export PORT=5231
 _build/prod/rel/events_app/bin/events_app start
