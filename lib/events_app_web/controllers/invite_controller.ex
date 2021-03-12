@@ -52,13 +52,13 @@ defmodule EventsAppWeb.InviteController do
     event_id = invite_params["event_id"]
     if Invites.get_invited(event_id, invite_params["email"]) do
       conn
-      |> put_flash(:info, "User already invited. Invite link: http://events.normalwebiste.art/events/#{event_id}")
+      |> put_flash(:info, "User already invited. Invite link: http://events.normalwebsite.art/events/#{event_id}")
       |> redirect(to: Routes.event_path(conn, :show, event_id))
     else
       case Invites.create_invite(invite_params) do
         {:ok, invite} ->
           conn
-          |> put_flash(:info, "User successfully invited. Invite link: http://events.normalwebiste.art/events/#{event_id}")
+          |> put_flash(:info, "User successfully invited. Invite link: http://events.normalwebsite.art/events/#{event_id}")
           |> redirect(to: Routes.event_path(conn, :show, event_id))
 
         {:error, %Ecto.Changeset{} = changeset} ->

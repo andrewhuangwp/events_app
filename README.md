@@ -12,6 +12,7 @@ Design Decisions:
 * As specified, users can make multiple comments. Users can only have one invite response: each invite response overwrites the old response. If an invited user comments but gets their invite revoked their comments will stay remain on the page (comments no automatically deleted if commenter's invitation is deleted).
 * Anyone who hasn't logged in cannot view any events but can view list of users. Users can only view events if they are invited or are the owner.
 * Assumed that users will not delete their profile if they still own one or more event. If they try to delete, phoenix will err and delete will not go through.
+* After creating an invitation the owner will get an alert with a link to give to invited users.
 
 To start your Phoenix server:
 
