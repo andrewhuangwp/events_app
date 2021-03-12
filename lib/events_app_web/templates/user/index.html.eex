@@ -12,7 +12,11 @@
   <tbody>
 <%= for user <- @users do %>
     <tr>
-      <td><%= link "#{user.name}", to: Routes.user_path(@conn, :show, user) %></td>
+
+      <td>
+        <img class="img-thumbnail circle mr-2" src="<%= Routes.user_path(@conn, :show_photo, user) %>" alt="Profile Photo">
+        <%= link "#{user.name}", to: Routes.user_path(@conn, :show, user) %>
+      </td>
       <td><%= user.email %></td>
     </tr>
 <% end %>

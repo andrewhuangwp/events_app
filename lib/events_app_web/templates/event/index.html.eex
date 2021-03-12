@@ -1,4 +1,4 @@
-<h1>List of All Events</h1>
+<h1>List of All Events Invited To</h1>
 
 <table class="table">
   <thead>
@@ -10,12 +10,35 @@
     </tr>
   </thead>
   <tbody>
-<%= for event <- @events do %>
+<%= for invite <- @invites do %>
     <tr>
-      <td><%= event.name %></td>
-      <td><%= event.date %></td>
-      <td><%= event.desc %></td>
-      <td><span><%= link "#{event.name}", to: Routes.event_path(@conn, :show, event) %></span></td>
+      <td><%= invite.event.name %></td>
+      <td><%= invite.event.date %></td>
+      <td><%= invite.event.desc %></td>
+      <td><span><%= link "#{invite.event.name}", to: Routes.event_path(@conn, :show, invite.event) %></span></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<h1>List of All Events Owned</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Name</th>
+      <th>Desc</th>
+      <th>Link to Event</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for own <- @owned do %>
+    <tr>
+      <td><%= own.name %></td>
+      <td><%= own.date %></td>
+      <td><%= own.desc %></td>
+      <td><span><%= link "#{own.name}", to: Routes.event_path(@conn, :show, own) %></span></td>
     </tr>
 <% end %>
   </tbody>

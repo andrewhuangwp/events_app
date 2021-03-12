@@ -2,5 +2,5 @@
 
 <%= render "form.html", Map.put(assigns, :action, Routes.event_path(@conn, :update, @event)) %>
 
-<span><%= link "Delete", to: Routes.event_path(@conn, :delete, @event), method: :delete, data: [confirm: "Are you sure?"] %></span>
-<span><%= link "Back", to: Routes.event_path(@conn, :index) %></span>
+<span><%= link "Delete", to: Routes.event_path(@conn, :delete, @event), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-outline-primary" %></span>
+<span><%= link "Back", to: Routes.event_path(@conn, :index), class: "btn btn-outline-primary" %></span>

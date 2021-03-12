@@ -3,13 +3,59 @@ defmodule EventsAppWeb.EventController do
 
   alias EventsApp.Events
   alias EventsApp.Events.Event
+  alias EventsApp.Comments
+  alias EventsApp.Invites
   alias EventsAppWeb.Plugs
 
-  plug Plugs.UserRequired when action not in [:index, :show]
+  plug Plugs.UserRequired when action not in []
+  plug :ownerRequired when action in [:edit, :update, :delete]
+  plug :fetchEvent when action not in [:index, :new, :create]
+  plug :invitedRequired when action not in [:index, :new, :create]
+
+  def ownerRequired(conn, _params) do
+    current_user = conn.assigns[:current_user]
+    id = conn.params["id"]
+    event = Events.get_event!(id)
+
+    if current_user.id == event.user.id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Only the owner of the event may modify the event.")
+      |> redirect(to: Routes.page_path(conn, :index))
+      |> halt()
+    end
+  end
+
+
+  def invitedRequired(conn, _params) do
+    current_user = conn.assigns[:current_user]
+    id = conn.params["id"]
+    event = Events.get_event!(id)
+    invites = Invites.list_invites()
+    invited = Enum.any?(invites, fn inv -> inv.email == current_user.email end)
+
+    if (current_user.id == event.user.id || invited) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Only the owner of the event or invited users may see the event.")
+      |> redirect(to: Routes.page_path(conn, :index))
+      |> halt()
+    end
+  end
+
+  def fetchEvent(conn, _params) do
+    id = conn.params["id"]
+    event = Events.get_event!(id)
+    assign(conn, :event, event)
+  end
 
   def index(conn, _params) do
-    events = Events.list_events()
-    render(conn, "index.html", events: events)
+    current_user = conn.assigns[:current_user]
+    invites = EventsApp.Users.list_invites(current_user)
+    owned = current_user.events
+    render(conn, "index.html", invites: invites, owned: owned)
   end
 
   def new(conn, _params) do
@@ -33,7 +79,17 @@ defmodule EventsAppWeb.EventController do
 
   def show(conn, %{"id" => id}) do
     event = Events.get_event!(id)
-    render(conn, "show.html", event: event)
+
+    invite = %Invites.Invite{
+      event_id: event.id,
+    }
+    newInvite = Invites.change_invite(invite)
+    comment = %Comments.Comment {
+      event_id: event.id
+    }
+    newComment = Comments.change_comment(comment)
+    responseCount = Events.load_invites(event)
+    render(conn, "show.html", event: event, newInvite: newInvite, newComment: newComment, responseCount: responseCount )
   end
 
   def edit(conn, %{"id" => id}) do

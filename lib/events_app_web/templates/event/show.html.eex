@@ -1,29 +1,135 @@
 <h1><%= @event.name %></h1>
 <h6> Event Page </h6>
+<div class="row text-break">
+  <div class="col-sm-7 border border-secondary rounded m-1">
+    <h3>Event Info</h3>
+    <p>Name: <%= @event.name %></p>
+    <p>DateTime: <%= @event.date %></p>
+    <p>Description: <%= @event.desc %></p>
+  </div>
+  <div class="col-sm-4 border border-secondary rounded m-1">
+    <h3>Event Owner</h3>
+    <p>
+      <img class="img-thumbnail circle mr-2" src="<%= Routes.user_path(@conn, :show_photo, @event.user) %>" alt="Profile Photo">
+      Name: <%= link "#{@event.user.name}", to: Routes.user_path(@conn, :show, @event.user) %>
+    </p>
+    <p>Email: <%= @event.user.email %></p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12 border border-secondary rounded m-1">
+    <h3>Comments</h3>
+    <%= if isInvited?(@conn, @event.invites) || isCurrUser?(@conn, @event.user.id) do %>
+      <%= render(
+      EventsAppWeb.CommentView,
+      "form.html",
+      changeset: @newComment,
+      action: Routes.comment_path(@conn, :create),
+      eventId: @event.id,
+      userId: @conn.assigns[:current_user].id
+    ) %>
 
-<ul>
+    <% else %>
+      <p>Must be invited or event owner to comment.</p>
+    <% end %>
+    <ul class="list-group">
+      <% comments = EventsApp.Comments.get_comments_event(@event.id) %>
+      <%= for comment <- comments do %>
+        <div class="list-group-item">
+          <div class="flex-row between">
+            <div>
+              <img class="img-thumbnail circle" src="<%= Routes.user_path(@conn, :show_photo, comment.user) %>" alt="Profile Photo">
+              <%= link "#{comment.user.name}:", to: Routes.user_path(@conn, :show, comment.user) %>
+              <p><%= comment.body %></p>
+            </div>
+            <%= if (isCurrUser?(@conn, @event.user.id)) || (isCurrUser?(@conn, comment.user.id))  do %>
+              <td><%= link "Delete", to: Routes.comment_path(@conn, :delete, comment), method: :delete, data: [confirm: "Are you sure?"], class: "btn-sm btn-outline-danger" %></td>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12 border border-secondary rounded m-1">
+    <% invite = findInvite(@conn, @event.invites) %>
+    <%= if invite != nil do %>
+        <%= case invite.status do %>
+          <% "yes" -> %>
+            <h2>Responded Going</h2>
+            <p>Modify response below:</p>
+          <% "no" -> %>
+            <h2>Responded Not Going</h2>
+            <p>Modify response below:</p>
+          <% "maybe" -> %>
+            <h2>Responded Maybe</h2>
+            <p>Modify response below:</p>
+          <% _ -> %>
+            <h2>Have Not Responded</h2>
+            <p>Respond below:</p>
+        <% end %>
+        <%= render(
+            EventsAppWeb.InviteView,
+            "response.html",
+            changeset: EventsApp.Invites.change_invite(invite),
+            action: Routes.invite_path(@conn, :update, invite),
+            eventId: @event.id,
+            email: invite.email
+          ) %>
+    <% end %>
+    <h2>Invites</h2>
+      <%= if isCurrUser?(@conn, @event.user.id) do %>
+        <%= render(
+          EventsAppWeb.InviteView,
+          "form.html",
+          changeset: @newInvite,
+          action: Routes.invite_path(@conn, :create),
+          eventId: @event.id
+        ) %>
+        <% end %>
+        <table class="table">
+        <thead>
+          <th>User</th>
+          <th>Response</th>
+          <%= if isCurrUser?(@conn, @event.user.id) do %>
+            <th></th>
+          <% end %>
+        </thead>
+        <tbody>
+          <%= for invite <- @event.invites do %>
+              <tr>
+                <td>
+                  <% recipient = EventsApp.Users.get_user_by_email(invite.email) %>
+                  <%= if recipient do %>
+                    <div>
+                      <img class="img-thumbnail circle" src="<%= Routes.user_path(@conn, :show_photo, recipient) %>" alt="Profile Photo">
+                      <%= link "#{recipient.name}", to: Routes.user_path(@conn, :show, recipient) %>
+                    </div>
+                  <% else %>
+                    <%= invite.email %>
+                  <% end %>
+                </td>
+                <td><%= invite.status %></td>
+                <%= if isCurrUser?(@conn, @event.user.id) do %>
+                  <td><%= link "Delete", to: Routes.invite_path(@conn, :delete, invite), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-outline-danger" %></td>
+                <% end %>
+              </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <div class="col-sm-4 border border-secondary rounded m-1">
+      <h3>Number of Reponses</h3>
+      <p class="text-success">Confirmed: <%= @responseCount.yes %></p>
+      <p class="text-danger">Rejected: <%= @responseCount.no %></p>
+      <p>Maybe: <%= @responseCount.maybe %></p>
+      <p class="text-secondary">No replies: <%= @responseCount.none %></p>
+    </div>
+  </div>
 
-  <li>
-    <strong>Date:</strong>
-    <%= @event.date %>
-  </li>
+</div>
+<div>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @event.name %>
-  </li>
-
-  <li>
-    <strong>Desc:</strong>
-    <%= @event.desc %>
-  </li>
-
-  <li>
-    <strong>Owner:</strong>
-    <%= link "#{@event.user.name}", to: Routes.user_path(@conn, :show, @event.user) %>
-  </li>
-
-</ul>
-
+</div>
 <span><%= link "Edit Event", to: Routes.event_path(@conn, :edit, @event), class: "btn btn-outline-primary" %></span>
 <span><%= link "View All Events", to: Routes.event_path(@conn, :index), class: "btn btn-outline-primary"  %></span>

@@ -22,6 +22,29 @@ defmodule EventsApp.Events do
     |> Repo.preload(:user)
   end
 
+  def count_invites(invites, type) do
+    result = Enum.reduce(invites, 0, fn(inv, acc) ->
+      if inv.status == type do
+        acc + 1
+      else
+        acc
+      end
+    end)
+    result
+  end
+
+  def load_invites(%Event{} = event) do
+    event = Repo.preload(event, :invites)
+    invites = event.invites
+
+    yes = count_invites(invites, "yes")
+    no = count_invites(invites, "no")
+    maybe = count_invites(invites, "maybe")
+    none = count_invites(invites, "none")
+
+    %{yes: yes, no: no, maybe: maybe, none: none}
+  end
+
   @doc """
   Gets a single event.
 
@@ -36,7 +59,12 @@ defmodule EventsApp.Events do
       ** (Ecto.NoResultsError)
 
   """
-  def get_event!(id), do: Repo.get!(Event, id) |> Repo.preload(:user)
+  def get_event!(id) do
+    Repo.get!(Event, id)
+      |> Repo.preload(:user)
+      |> Repo.preload(:invites)
+      |> Repo.preload(:comments)
+  end
 
   @doc """
   Creates a event.

@@ -1,3 +1,4 @@
+<img class="img-thumbnail" src="<%= Routes.user_path(@conn, :show_photo, @user) %>" alt="Profile Photo">
 <%= if isCurrUser?(@conn, @user.id) do %>
   <h1>Your Profile</h1>
 <% else %>
@@ -17,8 +18,43 @@
   </li>
 
 </ul>
-
-<%= if isCurrUser?(@conn, @user.id) do %>
+<%= if isCurrUser?(@conn, @user.id) do%>
 <span><%= link "Edit Profile", to: Routes.user_path(@conn, :edit, @user), class: "btn btn-outline-info" %></span>
+<h2 class="mt-4"><%= @user.name %>'s Events</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for event <- @user.events do %>
+        <tr>
+          <td><span><%= link "#{event.name}", to: Routes.event_path(@conn, :show, event) %></span></td>
+          <td><%= event.date %></td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
+<h2 class="mt-4">Events Invited To</h2>
+<% invites = EventsApp.Users.list_invites(@user) %>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for invite <- invites do %>
+        <tr>
+          <td><span><%= link "#{invite.event.name}", to: Routes.event_path(@conn, :show, invite.event) %></span></td>
+          <td><%= invite.event.date %></td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
 <% end %>
+
 <span><%= link "View All Profiles", to: Routes.user_path(@conn, :index), class: "btn btn-outline-primary" %></span>

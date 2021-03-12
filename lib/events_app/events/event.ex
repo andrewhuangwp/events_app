@@ -9,6 +9,9 @@ defmodule EventsApp.Events.Event do
 
     belongs_to :user, EventsApp.Users.User
 
+    has_many :invites, EventsApp.Invites.Invite, on_delete: :delete_all
+    has_many :comments, EventsApp.Comments.Comment, on_delete: :delete_all
+
     timestamps()
   end
 
