@@ -12,8 +12,6 @@ echo "Building..."
 
 mix deps.get
 mix compile
-mix ecto.create
-mix ecto.migrate
 (cd assets && npm install)
 (cd assets && webpack --mode production)
 npm install --prefix ./assets
